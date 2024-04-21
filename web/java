@@ -1,0 +1,73 @@
+class Adventurer {
+    int id;
+    int points;
+    Adventurer left;
+    Adventurer right;
+
+    public Adventurer(int id, int points) {
+        this.id = id;
+        this.points = points;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class Zone {
+    int zoneId;
+    Zone next;
+    Zone prev;
+    Adventurer root; // Root of the binary tree of adventurers
+
+    public Zone(int zoneId) {
+        this.zoneId = zoneId;
+        this.root = null;
+        this.next = this;
+        this.prev = this;
+    }
+
+    // Binary tree insert method
+    public void insertAdventurer(Adventurer adventurer) {
+        root = insertRec(root, adventurer);
+    }
+
+    private Adventurer insertRec(Adventurer current, Adventurer adventurer) {
+        if (current == null) {
+            return adventurer;
+        }
+        if (adventurer.points < current.points ||
+            (adventurer.points == current.points && adventurer.id < current.id)) {
+            current.left = insertRec(current.left, adventurer);
+        } else {
+            current.right = insertRec(current.right, adventurer);
+        }
+        return current;
+    }
+
+    // Binary tree deletion and other methods would be implemented similarly
+}
+
+class Guild {
+    Zone head;
+    Zone guildMasterCurrentZone; // Where the Guild Master currently is
+    int size;
+
+    public Guild() {
+        head = null;
+        size = 0;
+        guildMasterCurrentZone = null;
+    }
+
+    public void addZone(Zone newZone) {
+        if (head == null) {
+            head = newZone;
+            guildMasterCurrentZone = newZone;
+        } else {
+            Zone tail = head.prev;
+            tail.next = newZone;
+            newZone.prev = tail;
+        }
+        newZone.next = head;
+        head.prev = newZone;
+        size++;
+    }
+}
